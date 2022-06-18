@@ -2,6 +2,14 @@
 
 A project to controll customer
 
+#### flutter project upload steps
+learn from [Youtube](https://www.youtube.com/watch?v=xJo7Mqse960)
+If we need to upload to firebase , just simply type
+`flutter build web`
+and then
+`firebase deploy --only hosting`
+Done
+
 ## Getting Started
 
 This project is a starting point for a Flutter application.
