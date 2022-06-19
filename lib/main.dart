@@ -1,29 +1,39 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gooliluck_customer_controller/login/LoginPage.dart';
 import 'package:gooliluck_customer_controller/pages/OrderList.dart';
 import 'package:gooliluck_customer_controller/utils.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:gooliluck_customer_controller/utils/Utils.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'firebase_options.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform
   );
-  // await FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
 
-  // This widget is the root of your application.
+  @override
+  State<StatefulWidget> createState() => _MyApp();
+}
+
+class _MyApp extends State<MyApp>{
+  late Locale _locale;
   @override
   Widget build(BuildContext context) {
     logE('message');
     return MaterialApp(
       title: 'Gooliluck Customer Controller',
       initialRoute: LoginPage.route,
+      localizationsDelegates:AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      scaffoldMessengerKey: Utils.messengerKey,
       routes: {
         LoginPage.route :(context) => const LoginPage(),
         OrderList.route : (context) => const OrderList()
@@ -42,4 +52,5 @@ class MyApp extends StatelessWidget {
       ),
     );
   }
+
 }

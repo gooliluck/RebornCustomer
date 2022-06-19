@@ -20,8 +20,8 @@ TextFormField buildTextFormFieldForPassword(
       passwordSavedCallback(value);
     },
     validator: (String? value) {
-      return (value != null && value.isEmpty)
-          ? '密碼不能為空'
+      return (value != null && value.length < 6)
+          ? '密碼不能為空 LESS THEN 6 CHAR'
           : null;
     },
   );

@@ -3,17 +3,18 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:gooliluck_customer_controller/login/LoginPage.dart';
 import 'package:gooliluck_customer_controller/pages/OrderList.dart';
 import 'package:gooliluck_customer_controller/widgets/GLEmail.dart';
 import 'package:gooliluck_customer_controller/widgets/GLPassword.dart';
 import '../../utils.dart';
+import '../../utils/Utils.dart';
 
 class SignUpWidget extends StatefulWidget {
   final VoidCallback onClickedSignIn;
   const SignUpWidget({Key? key,required this.onClickedSignIn}) : super(key: key);
   @override
   State<StatefulWidget> createState() => _SignUpWidgetState();
-
 }
 
 class _SignUpWidgetState extends State<SignUpWidget> {
@@ -28,29 +29,29 @@ class _SignUpWidgetState extends State<SignUpWidget> {
     return Builder(
       builder: (buildContext) {
         return Scaffold(
-            appBar: AppBar(
-              title: const Text('title'),
-              leading: const Text('leading'),
-            ),
             body: Form(
               key: _fromKey,
-              child: ListView(
+              child: Padding(
                 padding: const EdgeInsets.all(20),
-                children: [
-                  buildTextFormFieldForEmail((changedValue) {
-                    _email = changedValue ?? '';
-                  }),
-                  buildTextFormFieldForPassword((changedValue) {
-                    _password = changedValue ?? '';
-                  }, _passwordVisible,
-                      visibleIcon: buildVisibleIconButton(), lastField: true),
-                  const SizedBox(
-                    height: 15,
-                  ),
-                  buildSubmitButton(),
-                  SizedBox(height: 24,),
-                  _forgetPasswordRow(),
-                ],
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    buildTextFormFieldForEmail((changedValue) {
+                      _email = changedValue ?? '';
+                    }),
+                    buildTextFormFieldForPassword((changedValue) {
+                      _password = changedValue ?? '';
+                    }, _passwordVisible,
+                        visibleIcon: buildVisibleIconButton(), lastField: true),
+                    const SizedBox(
+                      height: 15,
+                    ),
+                    buildSubmitButton(),
+                    const SizedBox(height: 24,),
+                    _forgetPasswordRow(),
+                  ],
+                ),
               ),
             ));
       },
@@ -111,8 +112,12 @@ class _SignUpWidgetState extends State<SignUpWidget> {
     try {
       await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: _email.trim(), password: _password.trim());
+      Navigator.of(context).pop();
+      widget.onClickedSignIn();
     } on FirebaseAuthException catch (e) {
       logE(e.toString());
+      Utils.showSnackBar(e.toString());
+      Navigator.of(context).pop();
     }
   }
 }

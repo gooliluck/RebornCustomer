@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:gooliluck_customer_controller/pages/OrderList.dart';
+import 'package:gooliluck_customer_controller/utils/Utils.dart';
 import 'package:gooliluck_customer_controller/widgets/GLEmail.dart';
 import 'package:gooliluck_customer_controller/widgets/GLPassword.dart';
 import '../../utils.dart';
@@ -14,11 +15,9 @@ class LoginWidget extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() => _LoginWidgetState();
-
 }
 
 class _LoginWidgetState extends State<LoginWidget> {
-
   final _fromKey = GlobalKey<FormState>();
   String _email = '';
   String _password = '';
@@ -29,30 +28,34 @@ class _LoginWidgetState extends State<LoginWidget> {
     return Builder(
       builder: (buildContext) {
         return Scaffold(
-            appBar: AppBar(
-              title: const Text('title'),
-              leading: const Text('leading'),
-            ),
-            body: Form(
-              key: _fromKey,
-              child: Center(
-                child: ListView(
-                  padding: const EdgeInsets.all(20),
-                  children: [
-                    buildTextFormFieldForEmail((changedValue) {
-                      _email = changedValue ?? '';
-                    }),
-                    buildTextFormFieldForPassword((changedValue) {
-                      _password = changedValue ?? '';
-                    }, _passwordVisible,
-                        visibleIcon: buildVisibleIconButton(), lastField: true),
-                    const SizedBox(
-                      height: 15,
-                    ),
-                    buildSubmitButton(),
-                    SizedBox(height: 24,),
-                    _forgetPasswordRow(),
-                  ],
+            body: SizedBox(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
+              child: Form(
+                key: _fromKey,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      buildTextFormFieldForEmail((changedValue) {
+                        _email = changedValue ?? '';
+                      }),
+                      buildTextFormFieldForPassword((changedValue) {
+                        _password = changedValue ?? '';
+                      }, _passwordVisible,
+                          visibleIcon: buildVisibleIconButton(), lastField: true),
+                      const SizedBox(
+                        height: 15,
+                      ),
+                      buildSubmitButton(),
+                      const SizedBox(
+                        height: 24,
+                      ),
+                      _forgetPasswordRow(),
+                    ],
+                  ),
                 ),
               ),
             ));
@@ -62,24 +65,19 @@ class _LoginWidgetState extends State<LoginWidget> {
 
   Widget _forgetPasswordRow() {
     return Center(
-      child: RichText(text: TextSpan(
-          style: const TextStyle(color: Colors.black, fontSize: 16),
-          text: 'No Account?   ',
-          children: [
+      child: RichText(
+          text: TextSpan(
+              style: const TextStyle(color: Colors.black, fontSize: 16),
+              text: 'No Account?   ',
+              children: [
             TextSpan(
                 recognizer: TapGestureRecognizer()
                   ..onTap = widget.onClickedSignUp,
                 text: 'Sign up',
                 style: TextStyle(
                     decoration: TextDecoration.underline,
-                    color: Theme
-                        .of(context)
-                        .colorScheme
-                        .secondary
-                )
-            )
-          ]
-      )),
+                    color: Theme.of(context).colorScheme.secondary))
+          ])),
     );
   }
 
@@ -91,14 +89,27 @@ class _LoginWidgetState extends State<LoginWidget> {
             if (formState.validate()) {
               formState.save();
               logW('email is $_email\npassword is $_password');
-
-              Navigator.of(context).pushNamed(OrderList.route);
+              signIn();
             }
           } else {
             logE('currentState is null');
           }
         },
         child: const Text('Login'));
+  }
+  Future signIn() async {
+    showDialog(context: context, barrierDismissible: false,builder: (context) => const Center(child: CircularProgressIndicator(),));
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: _email.trim(), password: _password.trim());
+      var userId = FirebaseAuth.instance.currentUser?.uid;
+      logI('user uid is $userId');
+      Navigator.of(context).pushNamed(OrderList.route);
+    } on FirebaseAuthException catch (e) {
+      logE(e.toString());
+      Utils.showSnackBar(e.toString());
+      Navigator.of(context).pop();
+    }
   }
 
   IconButton buildVisibleIconButton() {
@@ -111,11 +122,7 @@ class _LoginWidgetState extends State<LoginWidget> {
         icon: Icon(
           // Based on passwordVisible state choose the icon
           _passwordVisible ? Icons.visibility : Icons.visibility_off,
-          color: Theme
-              .of(context)
-              .primaryColorDark,
+          color: Theme.of(context).primaryColorDark,
         ));
   }
-
-
 }

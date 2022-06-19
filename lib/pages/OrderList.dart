@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:gooliluck_customer_controller/utils.dart';
 
 class OrderList extends StatefulWidget {
   const OrderList({Key? key}) : super(key: key);
@@ -16,7 +17,7 @@ class _OrderList extends State<OrderList> {
       builder: (buildContext) {
         return Scaffold(
           appBar: AppBar(
-            title: const Text('orders'),
+            title: Text(getString(context).orderTitle),
           ),
           body: _expansionPanelList (buildContext),
         );
