@@ -24,6 +24,7 @@ class MyApp extends StatefulWidget {
 
 class _MyApp extends State<MyApp>{
   late Locale _locale;
+  double d=0;
   @override
   Widget build(BuildContext context) {
     logE('message');
