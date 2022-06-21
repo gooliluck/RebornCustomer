@@ -4,7 +4,6 @@ import 'package:gooliluck_customer_controller/pages/OrderList.dart';
 import 'package:gooliluck_customer_controller/utils.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:gooliluck_customer_controller/utils/Utils.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'firebase_options.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 

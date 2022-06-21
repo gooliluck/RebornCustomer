@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:gooliluck_customer_controller/firestore/database_manager.dart';
 import 'package:gooliluck_customer_controller/utils.dart';
 
 class OrderList extends StatefulWidget {
@@ -12,6 +13,11 @@ class OrderList extends StatefulWidget {
 
 class _OrderList extends State<OrderList> {
   @override
+  void initState(){
+    super.initState();
+
+  }
+  @override
   Widget build(BuildContext context) {
     return Builder(
       builder: (buildContext) {
@@ -19,7 +25,18 @@ class _OrderList extends State<OrderList> {
           appBar: AppBar(
             title: Text(getString(context).orderTitle),
           ),
-          body: _expansionPanelList (buildContext),
+          body: FutureBuilder(
+            future: FireStoreDataBase().getOrdersData(),
+            builder: (context,snapshot){
+              if(snapshot.hasError){
+                return const Text("something went wrong");
+              }
+              if(snapshot.connectionState == ConnectionState.done){
+                return _expansionPanelList(context);
+              }
+              return const Center(child: CircularProgressIndicator(),);
+            },
+          ),
         );
       },
     );

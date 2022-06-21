@@ -104,7 +104,10 @@ class _LoginWidgetState extends State<LoginWidget> {
           email: _email.trim(), password: _password.trim());
       var userId = FirebaseAuth.instance.currentUser?.uid;
       logI('user uid is $userId');
-      Navigator.of(context).pushNamed(OrderList.route);
+      if(userId != null ){
+        saveStringToSharePreference("userId", 'nGufiqoobGXu7cnJiZUfudZHSR42');
+        Navigator.of(context).pushNamed(OrderList.route);
+      }
     } on FirebaseAuthException catch (e) {
       logE(e.toString());
       Utils.showSnackBar(e.toString());
